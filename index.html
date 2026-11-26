@@ -22,7 +22,7 @@ p,h1,h2,h3{margin:0}
 button,input{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:3px solid #7FD6CC;outline-offset:2px}
-.wrap{height:100%;display:grid;grid-template-columns:minmax(0,1fr)}
+.wrap{height:100%;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
 .panel{display:none}
 .stage{height:100%;display:flex;justify-content:center}
 .app{position:relative;width:100%;height:100%;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
@@ -52,7 +52,7 @@ button{cursor:pointer}
 .guide button{flex:none;width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:transparent;color:#fff;display:grid;place-items:center}
 .guide[hidden]{display:none}
 /* screens */
-.scr{display:none;flex:1;flex-direction:column;overflow-y:auto;background:var(--bg)}
+.scr{display:none;flex:1;min-height:0;flex-direction:column;overflow-y:auto;background:var(--bg)}
 .scr.on{display:flex}
 .bar{flex:none;height:52px;display:flex;align-items:center;justify-content:center;position:relative;background:var(--w);font-size:17px;font-weight:700}
 .bar .back{position:absolute;left:4px;top:4px;width:44px;height:44px;border:0;background:none;display:grid;place-items:center}
@@ -77,6 +77,9 @@ button{cursor:pointer}
 .chip.on{border-color:var(--g);background:var(--gs);color:var(--gd);font-weight:700}
 .tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding:4px;background:#E7ECEB;border-radius:12px}
 .tab{height:42px;border:0;border-radius:9px;background:none;font-size:14px;color:var(--ink2)}
+.tab[data-view]{font-size:14px}
+.lv-h{font-size:15px;font-weight:900;margin:16px 0 8px}
+.lv-s{font-size:13px;font-weight:700;color:var(--mut);margin:10px 0 6px}
 .tab.on{background:var(--w);color:var(--gd);font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .panelx{display:none;flex-direction:column;gap:10px}
 .panelx.on{display:flex}
@@ -86,7 +89,7 @@ button{cursor:pointer}
 /* map */
 .map{position:relative;width:330px;height:330px;margin:8px auto 0;max-width:100%}
 .ring{position:absolute;border-radius:50%}
-.node{position:absolute;transform:translate(-50%,-50%);width:92px;padding:6px 4px;border-radius:10px;background:var(--w);text-align:center;font-size:12px;font-weight:700;border:1.5px solid;line-height:1.3}
+.node{position:absolute;cursor:pointer;font-family:inherit;transform:translate(-50%,-50%);width:92px;padding:6px 4px;border-radius:10px;background:var(--w);text-align:center;font-size:12px;font-weight:700;border:1.5px solid;line-height:1.3}
 .node.safe{border-color:var(--g);color:var(--gd)}
 .node.risky{border-color:var(--risk);color:var(--risk)}
 .node.hot{background:var(--risk);color:#fff;border-color:var(--risk);animation:pulse 1.6s ease-in-out infinite}
@@ -112,6 +115,20 @@ input[type=range]{width:100%;accent-color:var(--g);height:28px}
 .quick i{display:block;width:28px;height:28px;margin:0 auto 6px;border-radius:9px;background:var(--gs)}
 .quick .new{outline:2px solid var(--g)}
 .quick .new i{background:var(--g)}
+.dim{position:absolute;inset:0;background:rgba(10,20,18,.45);z-index:5}
+.sheet{position:absolute;left:0;right:0;bottom:0;max-height:78%;overflow-y:auto;background:var(--w);border-radius:20px 20px 0 0;padding:20px 20px 24px;z-index:6;box-shadow:0 -8px 30px rgba(0,0,0,.18)}
+.dim[hidden],.sheet[hidden]{display:none}
+.x{width:44px;height:44px;border:0;background:#EEF2F1;border-radius:12px;display:grid;place-items:center;flex:none}
+.prod{border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.prod .n{font-weight:700;font-size:15px}
+.prod .m{font-size:12px;color:var(--mut)}
+.prod .d{font-size:13px;color:var(--ink2);margin-top:4px}
+.chain{display:grid;grid-template-columns:1fr auto 1fr auto 1.2fr;align-items:center;gap:6px;margin-top:10px}
+.cbox{border:1.5px solid var(--g);border-radius:10px;padding:8px 6px;text-align:center;display:flex;flex-direction:column;font-size:13px;color:var(--gd)}
+.cbox span{font-size:12px;color:var(--mut)}
+.cbox.main{background:var(--ink);border-color:var(--ink);color:#fff}
+.cbox.main span{color:#C9D4D1}
+.arr{color:var(--mut);font-weight:700}
 .up{color:var(--up)}.down{color:var(--down)}
 .num{font-variant-numeric:tabular-nums;white-space:nowrap}
 </style>
@@ -165,6 +182,8 @@ input[type=range]{width:100%;accent-color:var(--g);height:28px}
           <p style="font-size:14px;color:#E2F6F3">뭘 살지, 언제 팔지 먼저 정해두면 흔들릴 때 돌아볼 수 있어요.</p>
           <button class="cta" style="background:#fff;color:var(--g)" data-go="pick">원큐노트 시작하기</button>
         </div>
+        <div class="card stack" style="gap:6px"><p style="font-weight:700">관심 종목</p>
+          <button class="row item" data-go="stock" style="background:none;padding:6px 0"><span class="logo">삼</span><span><p class="t">삼성전자</p><p class="s">국내주식 · 반도체</p></span><span class="go">관계 보기</span></button></div>
         <div class="quick"><div><i></i>AI 브리핑</div><div><i></i>ETF MBTI</div><div><i></i>주식 모으기</div><div class="new"><i></i>원큐노트</div></div>
       </div>
       <div class="tabbar" style="margin-top:auto"><span class="on">홈</span><span>관심</span><span>원큐노트</span><span>잔고</span><span>전체</span></div>
@@ -203,19 +222,24 @@ input[type=range]{width:100%;accent-color:var(--g);height:28px}
     <section class="scr" id="v-map">
       <div class="bar"><button class="back" aria-label="뒤로" data-go="pick"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>원큐노트 2/4</div>
       <div class="pad" style="padding-top:18px"><p class="h">삼성전자 관계 지도</p><p class="sub">안쪽일수록 움직임이 작고, 바깥쪽일수록 커요.</p></div>
+      <div class="pad" style="margin-top:12px"><div class="tabs" role="tablist" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button class="tab on" role="tab" data-view="map">지도로 보기</button><button class="tab" role="tab" data-view="list">목록으로 보기</button></div></div>
+      <div id="mapView">
       <div class="map" aria-label="삼성전자 중심 관계 지도">
         <div class="ring" style="inset:15px;background:var(--risks);border:1px dashed #F2B48F"></div>
-        <div class="ring" style="inset:70px;background:var(--gs);border:1px dashed #8CCFC6"></div>
-        <div class="ring" style="left:123px;top:123px;width:84px;height:84px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:14px;font-weight:700">삼성전자</div>
-        <div class="node safe" style="left:165px;top:72px">SK하이닉스</div>
-        <div class="node safe" style="left:83px;top:214px">삼성전자우</div>
-        <div class="node safe" style="left:247px;top:214px">반도체 ETF</div>
-        <div class="node risky" style="left:48px;top:92px">반도체 인버스</div>
-        <button class="node hot" style="left:282px;top:92px" data-go="sim">삼성전자 단일 레버리지 2배</button>
-        <div class="node risky" style="left:165px;top:308px;width:110px;white-space:nowrap">코스피200 선물</div>
+        <div class="ring" style="inset:62px;background:#F1F8F7;border:1px dashed #A9D9D2"></div>
+        <div class="ring" style="inset:100px;background:var(--gs);border:1px dashed #8CCFC6"></div>
+        <div class="ring" style="left:127px;top:127px;width:76px;height:76px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:14px;font-weight:700">삼성전자</div>
+        <button class="node safe" style="left:165px;top:110px" data-g="pref">우선주 1종</button>
+        <button class="node safe" style="left:165px;top:222px" data-g="peers">관련주 10종</button>
+        <button class="node safe" style="left:80px;top:165px;width:98px" data-g="etf">반도체 ETF 3종</button>
+        <button class="node hot" style="left:278px;top:62px;width:100px" data-g="lev">단일종목<br>레버리지 8종</button>
+        <button class="node risky" style="left:52px;top:62px;width:100px" data-g="inv">단일종목<br>인버스 1종</button>
+        <button class="node risky" style="left:165px;top:308px;width:104px" data-g="idx">지수 곱버스 1종</button>
       </div>
-      <div class="pad" style="display:flex;gap:16px;font-size:13px;margin-top:8px"><span style="color:var(--gd)">● 관련 우량주·ETF</span><span style="color:var(--risk)">● 레버리지·인버스·선물</span></div>
-      <div class="foot"><div class="card" style="font-size:13px">주황색 상품을 누르면 <b>직접 숫자를 움직여보며</b> 개념을 이해할 수 있어요.</div><button class="cta" data-go="rule">삼성전자로 기준 세우기</button></div>
+      <div class="pad" style="display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;margin-top:8px"><span style="color:var(--gd)">● 안쪽: 같은 회사·관련주·ETF</span><span style="color:var(--risk)">● 바깥쪽: 레버리지·인버스</span></div>
+      </div>
+      <div id="listView" class="pad" hidden style="margin-top:12px"></div>
+      <div class="foot"><div class="card" style="font-size:13px">동그라미를 누르거나 <b>목록으로 보기</b>를 누르면 관련주와 상품이 나와요. 추천이 아니라 삼성전자와 연결된 상품을 정리한 거예요.</div><button class="cta" data-go="rule">삼성전자로 기준 세우기</button></div>
     </section>
 
     <!-- 시뮬레이터 -->
@@ -229,7 +253,7 @@ input[type=range]{width:100%;accent-color:var(--g);height:28px}
         <div id="simrows" class="stack" style="gap:12px"></div>
       </div></div>
       <div class="pad" style="margin-top:12px"><div class="dark stack" style="gap:6px"><b style="font-size:15px">오르내리기만 해도 손해?</b><p>하루 +10%, 다음 날 -10%면 1배는 -1%, 2배는 -4%. 실제로 출시부터 7월 14일까지 삼성전자가 -12.04%일 때 단일종목 레버리지 ETF 7종 평균은 -33.43%였어요.</p><p style="font-size:12px;color:#93A5A1">출처: 서울신문 2026.7.15</p></div>
-      <p class="small" style="margin-top:10px">단일종목 레버리지는 매수 전에 사전교육 이수와 기본예탁금 요건을 갖춰야 해요.</p></div>
+      <p class="small" style="margin-top:10px">단일종목 레버리지는 매수 전에 레버리지 사전교육 1시간과 심화교육 1시간, 기본예탁금 1,000만원이 필요해요.</p></div>
       <div class="foot" style="flex-direction:row"><button class="cta ghost" style="flex:1" data-go="map">지도로</button><button class="cta" style="flex:2" data-go="rule">기준 세우기</button></div>
     </section>
 
@@ -280,7 +304,41 @@ input[type=range]{width:100%;accent-color:var(--g);height:28px}
           <div class="row" style="justify-content:space-between"><div><p style="font-weight:700">뉴스를 보고</p><p class="small">1종목 · 기준 지킴 0/1</p></div><b class="down num">-7.4%</b></div></div>
         <div class="dark"><p style="color:#8FD8CE;font-weight:700">이번 달 발견</p><p style="font-size:15px;color:#fff;margin-top:4px">뉴스만 보고 산 종목에서 기준을 놓쳤어요. 다음엔 사기 전에 관계 지도로 한 번 더 확인해볼까요?</p></div>
       </div>
-      <div class="foot"><button class="cta" data-go="start">처음부터 다시 보기</button></div>
+      <div class="foot"><button class="cta" data-go="stock">평소 종목 화면에서는?</button></div>
+    </section>
+
+    <div class="dim" id="dim" hidden></div>
+    <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shT" hidden>
+      <div class="row" style="justify-content:space-between"><p id="shT" style="font-size:19px;font-weight:900"></p><button class="x" id="shX" aria-label="닫기"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+      <p id="shD" class="small" style="margin-top:4px"></p>
+      <div id="shL" class="stack" style="margin-top:12px;gap:8px"></div>
+      <div id="shA"></div>
+      <p class="small" style="margin-top:12px">추천이 아니에요. 2026년 11월 기준 보도·운용사 공개 자료로 정리했고, 상품 구성과 비중은 바뀔 수 있어요.</p>
+    </div>
+
+    <!-- 종목 상세 · 관계 보기 -->
+    <section class="scr" id="v-stock">
+      <div class="bar"><button class="back" aria-label="뒤로" data-go="home"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>삼성전자</div>
+      <div style="background:var(--w);padding:6px 20px 0">
+        <p class="small">005930 · 코스피 · 반도체</p>
+        <div style="display:flex;gap:18px;margin-top:10px;font-size:15px;border-bottom:1px solid var(--line)">
+          <span style="padding:10px 0;color:var(--mut)">차트</span><span style="padding:10px 0;color:var(--mut)">호가</span><span style="padding:10px 0;font-weight:700;color:var(--g);border-bottom:2px solid var(--g)">관계 보기</span><span style="padding:10px 0;color:var(--mut)">뉴스</span>
+        </div>
+      </div>
+      <div class="pad" style="padding-top:16px">
+        <p style="font-size:19px;font-weight:900;line-height:1.4">처음 보는 기업이라면,<br>누구와 어떻게 연결돼 있는지부터</p>
+        <div class="card" style="margin-top:12px">
+          <p class="small" style="font-weight:700;color:var(--ink2)">삼성전자의 공급망 한눈에</p>
+          <div class="chain">
+            <div class="cbox"><b>소재</b><span>3곳</span></div><span class="arr">→</span>
+            <div class="cbox"><b>장비</b><span>4곳</span></div><span class="arr">→</span>
+            <div class="cbox main"><b>삼성전자</b><span>반도체 생산</span></div>
+          </div>
+          <p class="small" style="margin-top:8px">소재·장비 회사가 공급한 재료와 기계로 삼성전자가 반도체를 만들어요. 삼성전자가 설비투자를 늘리면 이 회사들의 주문도 함께 늘 수 있어요.</p>
+        </div>
+        <div id="stockRel"></div>
+      </div>
+      <div class="foot"><button class="cta" data-go="rule">이 종목으로 기준 세우기</button></div>
     </section>
   </main>
   </div>
@@ -293,11 +351,12 @@ const QR_SVG = '';
 const STEPS = [
   {id:'home',  t:'월급날', s:'급여일 알림으로 시작', h:'월급날 알림이 왔어요. ‘원큐노트 시작하기’를 눌러보세요'},
   {id:'pick',  t:'시작점 고르기', s:'아는 회사에서 출발', h:'탭을 바꿔보고, 삼성전자를 눌러보세요'},
-  {id:'map',   t:'종목 관계 지도', s:'관련 상품을 위험도 순으로', h:'주황색 ‘레버리지 2배’를 눌러보세요'},
+  {id:'map',   t:'종목 관계 지도', s:'관련 상품을 위험도 순으로', h:'동그라미를 누르거나 ‘목록으로 보기’로 관련주·상품을 확인해보세요'},
   {id:'sim',   t:'개념 시뮬레이터', s:'10% 빠지면 얼마?', h:'슬라이더를 움직여 1배·2배·인버스를 비교해보세요'},
   {id:'rule',  t:'나의 기준 카드', s:'이유와 기준을 먼저 적기', h:'산 이유와 기준을 정하고 매수해보세요'},
   {id:'alert', t:'기준 알림', s:'처음 이유로 돌아오기', h:'3주 뒤, 손절선에 가까워졌어요. 처음 이유를 확인해보세요'},
-  {id:'review',t:'월간 돌아보기', s:'다음 기준으로', h:'한 달을 돌아보고 다음 기준을 세워요'}
+  {id:'review',t:'월간 돌아보기', s:'다음 기준으로', h:'한 달을 돌아보고 다음 기준을 세워요'},
+  {id:'stock', t:'평소에도 관계 보기', s:'종목 화면에서 협력업체·관련주', h:'원큐노트 밖에서도 종목 화면의 ‘관계 보기’로 협력업체·관련주를 볼 수 있어요'}
 ];
 const VIEWS = ['start', ...STEPS.map(x => x.id)];
 const $ = s => document.querySelector(s);
@@ -321,12 +380,86 @@ function show(id) {
   if (i >= 0) { $('#gst').textContent = (i + 1) + '/' + STEPS.length; $('#ghint').textContent = STEPS[i].h; }
   $$('.route button').forEach(b => b.classList.toggle('on', b.dataset.go === id));
   if (id === 'alert') echo();
+  closeSheet();
 }
 function go(id) { if (location.hash !== '#' + id) location.hash = id; else show(id); }
 window.addEventListener('hashchange', () => show(location.hash.slice(1)));
 document.addEventListener('click', e => { const t = e.target.closest('[data-go]'); if (t) go(t.dataset.go); });
 $('#prev').onclick = () => { const i = STEPS.findIndex(x => x.id === location.hash.slice(1)); go(i <= 0 ? 'start' : STEPS[i - 1].id); };
 $('#next').onclick = () => { const i = STEPS.findIndex(x => x.id === location.hash.slice(1)); go(i >= STEPS.length - 1 ? 'start' : STEPS[i + 1].id); };
+
+
+// 관계 지도의 실제 상품 (2026.11 기준 공개 자료, 추천 아님)
+const GROUPS = {
+  pref: { t: '우선주', d: '삼성전자와 같은 회사의 다른 주식이에요.', risk: ['낮음', 'g'], items: [
+    ['삼성전자우', '삼성전자 우선주', '의결권 대신 배당을 조금 더 받는 주식이에요. 본주와 비슷하게 움직여요.']] },
+  peers: { t: '관련주', d: '삼성전자와 같은 업종이거나 장비·소재·부품을 공급하는 회사예요. 함께 움직일 때가 많지만 항상 같이 움직이지는 않아요.', risk: ['보통', 'g'], items: [
+    ['SK하이닉스', '경쟁사·같은 업종 · 메모리 반도체', '삼성전자와 함께 메모리 반도체 시장을 이끄는 회사예요.'],
+    ['삼성전기', '계열사·부품 공급', '반도체 패키지기판과 MLCC를 만들고, 삼성전자에 카메라 부품도 공급해요.'],
+    ['원익IPS', '협력업체(장비 공급)', '웨이퍼에 얇은 막을 입히는 증착(CVD·ALD) 장비를 만들어요.'],
+    ['테스', '협력업체(장비 공급)', '삼성전자와 설비부품을 공동 개발하는 장비 협력사예요.'],
+    ['피에스케이', '협력업체(장비 공급)', '삼성전자와 설비부품을 공동 개발하는 장비 협력사예요.'],
+    ['유진테크', '협력업체(장비 공급)', '삼성전자와 설비부품을 공동 개발하는 장비 협력사예요.'],
+    ['솔브레인', '협력업체(소재 공급)', '식각액·세정액을 만들고, 삼성전자와 3D 낸드용 고선택비 인산을 함께 개발했어요.'],
+    ['동진쎄미켐', '협력업체(소재 공급)', '회로를 그리는 노광 공정의 감광액(포토레지스트)을 만들어요.'],
+    ['원익머트리얼즈', '협력업체(소재 공급)', '반도체 공정에 쓰는 특수가스를 만들어요.'],
+    ['한미반도체', 'HBM 장비 회사', 'HBM을 쌓아 붙이는 본딩 장비의 대표 기업이에요.']] },
+  etf: { t: '반도체 ETF', d: '여러 반도체 기업을 한 번에 사는 상품이에요. 종목 하나보다 분산돼요.', risk: ['보통', 'g'], items: [
+    ['KODEX AI반도체TOP2플러스', '삼성자산운용', '삼성전자·SK하이닉스에 약 50%를 집중하고 삼성전기 등을 함께 담아요.'],
+    ['ACE AI반도체TOP3+', '한국투자신탁운용', 'SK하이닉스·삼성전자·한미반도체 3개 종목에 약 75%를 담아요.'],
+    ['KODEX 반도체', '삼성자산운용', '국내 반도체 기업에 나눠 투자하는 대표 반도체 ETF예요.']] },
+  lev: { t: '삼성전자 단일종목 레버리지', d: '삼성전자 하루 수익률의 2배를 따라가요. 2026년 5월 27일 처음 상장됐어요.', risk: ['매우 높음', 'risk'], items: [
+    ['현물형 레버리지 5종', '삼성·미래에셋·한국투자·KB·한화자산운용', '삼성전자 주식과 선물을 함께 활용해 2배를 만들어요.'],
+    ['선물형 레버리지 2종', '키움투자·하나자산운용', '선물로만 2배를 만들어요.'],
+    ['레버리지 ETN 1종', '미래에셋증권 발행', '증권사가 발행하는 상장지수증권(ETN)이에요.']],
+    note: '상품명에는 ‘ETF’를 쓸 수 없고 ‘단일종목’, ‘레버리지’를 꼭 표시해요. 사려면 레버리지 사전교육 1시간에 심화교육 1시간, 기본예탁금 1,000만원이 필요해요.', sim: true },
+  inv: { t: '삼성전자 단일종목 인버스2X', d: '삼성전자가 하루 1% 내리면 약 2% 오르는 반대 방향 상품(곱버스)이에요.', risk: ['매우 높음', 'risk'], items: [
+    ['인버스2X 1종', '한화자산운용 · 선물형', '삼성전자를 기초로 한 곱버스는 이 1종뿐이에요.']], sim: true },
+  idx: { t: '지수 곱버스', d: '삼성전자 개별 종목이 아니라 코스피200 전체를 반대로 2배 따라가요.', risk: ['매우 높음', 'risk'], items: [
+    ['KODEX 200선물인버스2X', '삼성자산운용', '코스피200 선물 하루 수익률의 -2배를 따라가요. 삼성전자는 이 지수에서 비중이 가장 큰 종목이에요.']], sim: true }
+};
+function openSheet(k) {
+  const g = GROUPS[k]; if (!g) return;
+  $('#shT').textContent = g.t;
+  $('#shD').textContent = g.d;
+  $('#shL').innerHTML = `<span class="tag ${g.risk[1]}" style="align-self:flex-start">위험 ${g.risk[0]}</span>` +
+    g.items.map(([n, m, d]) => `<div class="prod"><p class="n">${n}</p><p class="m">${m}</p><p class="d">${d}</p></div>`).join('');
+  $('#shA').innerHTML = (g.note ? `<p class="small" style="margin-top:10px;color:var(--risk)">${g.note}</p>` : '') +
+    (g.sim ? `<button class="cta" style="margin-top:14px" data-go="sim">손실 구조 직접 움직여 보기</button>` : '');
+  $('#dim').hidden = false; $('#sheet').hidden = false; $('#sheet').scrollTop = 0; $('#shX').focus();
+}
+function closeSheet() { $('#dim').hidden = true; $('#sheet').hidden = true; }
+document.addEventListener('click', e => {
+  const n = e.target.closest('[data-g]'); if (n) openSheet(n.dataset.g);
+  if (e.target.closest('#shX') || e.target.id === 'dim' || e.target.closest('#sheet [data-go]')) closeSheet();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeSheet(); });
+
+
+// 지도 ↔ 목록 전환
+function renderList() {
+  const order = [['같은 회사', ['pref']], ['관련주', ['peers']], ['여러 종목을 한 번에', ['etf']], ['변동이 큰 상품', ['lev', 'inv', 'idx']]];
+  const row = ([n, m, d]) => { const mm = m.includes(' · ') ? m.split(' · ')[1] : (k0 === 'peers' ? '' : m); return `<div class="prod" style="background:var(--w);padding:10px 14px"><div class="row" style="justify-content:space-between;gap:2px 8px;align-items:baseline;flex-wrap:wrap"><p class="n" style="white-space:nowrap">${n}</p><p class="m" style="text-align:right">${mm}</p></div><p class="d" style="margin-top:2px">${d}</p></div>`; };
+  let k0 = '';
+  const html = order.map(([title, keys]) => `<p class="lv-h">${title}</p>` + keys.map(k => {
+    const g = GROUPS[k]; k0 = k;
+    let body;
+    if (k === 'peers') {
+      const rel = [...new Set(g.items.map(x => x[1].split(' · ')[0]))];
+      body = rel.map(r => `<p class="lv-s">${r}</p><div class="stack" style="gap:8px">` + g.items.filter(x => x[1].split(' · ')[0] === r).map(row).join('') + '</div>').join('');
+    } else body = `<div class="stack" style="gap:8px">` + g.items.map(row).join('') + '</div>';
+    const head = keys.length > 1 ? `<p class="lv-s"><span class="tag ${g.risk[1]}">위험 ${g.risk[0]}</span> ${g.t}</p>` : `<p class="lv-s"><span class="tag ${g.risk[1]}">위험 ${g.risk[0]}</span></p>`;
+    return head + body + (k === 'idx' ? `<button class="cta ghost" style="margin-top:10px;height:48px;font-size:15px" data-go="sim">레버리지·인버스 손실 구조 움직여 보기</button>` : '');
+  }).join('')).join('') + '<p class="small" style="margin-top:16px">추천이 아니에요. 2026년 11월 기준 삼성전자 뉴스룸·언론 보도·운용사 공개 자료로 정리했고, 관계와 상품 구성은 바뀔 수 있어요.</p>';
+  $('#listView').innerHTML = html;
+  $('#stockRel').innerHTML = html;
+}
+function setView(v) {
+  $$('[data-view]').forEach(b => b.classList.toggle('on', b.dataset.view === v));
+  $('#mapView').hidden = v !== 'map';
+  $('#listView').hidden = v !== 'list';
+}
+document.addEventListener('click', e => { const b = e.target.closest('[data-view]'); if (b) setView(b.dataset.view); });
 
 // 시작점 탭
 $$('.tab').forEach(t => t.onclick = () => {
@@ -368,7 +501,7 @@ function echo() {
   $('#te').textContent = '+' + rule.target + '%';
 }
 
-sim(); paintRule(); show(location.hash.slice(1) || 'start');
+renderList(); sim(); paintRule(); show(location.hash.slice(1) || 'start');
 }
 </script>
 </body>
