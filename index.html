@@ -129,6 +129,13 @@ input[type=range]{width:100%;accent-color:var(--g);height:28px}
 .cbox.main{background:var(--ink);border-color:var(--ink);color:#fff}
 .cbox.main span{color:#C9D4D1}
 .arr{color:var(--mut);font-weight:700}
+.push{display:flex;gap:10px;align-items:flex-start;background:#1F2A28;color:#fff;border-radius:16px;padding:12px 14px}
+.pico{width:28px;height:28px;border-radius:8px;background:var(--g);display:grid;place-items:center;font-weight:900;font-size:14px;flex:none}
+.push .pt{font-size:12px;color:#A9BAB6}.push .pt span{margin-left:4px}
+.push .pb{font-size:14px;line-height:1.45;margin-top:2px}
+.ev{display:flex;gap:10px;align-items:flex-start}
+.evb{width:22px;height:22px;border-radius:11px;display:grid;place-items:center;flex:none;margin-top:2px}
+.evb.ok{background:var(--g)}.evb.no{background:var(--risk)}
 .up{color:var(--up)}.down{color:var(--down)}
 .num{font-variant-numeric:tabular-nums;white-space:nowrap}
 </style>
@@ -276,45 +283,45 @@ input[type=range]{width:100%;accent-color:var(--g);height:28px}
 
     <!-- 기준 알림 -->
     <section class="scr" id="v-alert">
-      <div class="bar"><button class="back" aria-label="뒤로" data-go="rule"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>기준 알림 · 3주 뒤</div>
-      <div class="pad stack" style="padding-top:16px">
+      <div class="bar"><button class="back" aria-label="뒤로" data-go="rule"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>기준 알림</div>
+      <div class="pad stack" style="padding-top:14px">
+        <div class="push" aria-label="받은 푸시 알림 예시">
+          <span class="pico">V</span>
+          <div style="flex:1"><p class="pt">하나증권V · 원큐노트 <span>3주 뒤</span></p><p class="pb">삼성전자가 내가 정한 손절선에 가까워졌어요. 처음 이유를 확인해볼까요?</p></div>
+        </div>
         <div class="card stack" style="gap:8px">
-          <span class="tag risk" style="align-self:flex-start">손절선에 가까워졌어요</span>
-          <p style="font-size:24px;font-weight:900">삼성전자 <span class="down num">-8.2%</span></p>
+          <p style="font-size:17px;font-weight:700;line-height:1.45">삼성전자가 내가 정한 손절선(<span id="se2" class="num">-10%</span>)에 가까워졌어요</p>
+          <p style="font-size:26px;font-weight:900">현재 <span class="down num">-8.2%</span></p>
           <div class="track" style="position:relative"><div class="fill" style="position:absolute;right:50%;width:41%;background:var(--down)"></div><div style="position:absolute;left:50%;top:-4px;width:2px;height:18px;background:#9AA6A3"></div></div>
           <div class="small" style="display:flex;justify-content:space-between"><span>손절선 <span id="se" class="num">-10%</span></span><span>매수가</span><span>목표 <span id="te" class="num">+15%</span></span></div>
+          <p class="small" style="background:var(--bg);border-radius:10px;padding:8px 10px">손절선은 손실이 이 이상 커지지 않게 <b>3주 전 직접 정한 선</b>이에요. 수치는 예시예요.</p>
         </div>
-        <div class="card stack" style="background:var(--gs);gap:8px"><p class="small" style="color:var(--gd);font-weight:700">내가 처음 산 이유 · 3주 전</p><span class="tag g" id="re" style="align-self:flex-start;background:#fff">실적이 좋아서</span><p id="me" style="font-size:17px;font-weight:700">“반도체 업황이 회복될 것 같아서”</p></div>
+        <div class="card stack" style="background:var(--gs);gap:8px"><p class="small" style="color:var(--gd);font-weight:700">내가 처음 산 이유 · 3주 전 기준 카드</p><span class="tag g" id="re" style="align-self:flex-start;background:#fff">실적이 좋아서</span><p id="me" style="font-size:17px;font-weight:700">“반도체 업황이 회복될 것 같아서”</p></div>
         <div class="card"><p class="small" style="font-weight:700;color:var(--ink2)">왜 움직였나요? · AI 브리핑 (예시)</p><p style="font-size:14px;margin-top:6px">미국 반도체주 약세와 환율 영향으로 하락했어요. 업황 전망 자체가 바뀐 뉴스는 아직 없어요.</p></div>
-        <p style="font-size:18px;font-weight:900">처음 이유, 지금도 유효한가요?</p>
+        <div><p style="font-size:18px;font-weight:900">처음 이유, 지금도 유효한가요?</p><p class="small" style="margin-top:4px">고른 답은 월간 돌아보기에 ‘기준대로 판단했는지’로 기록돼요.</p></div>
       </div>
-      <div class="foot"><button class="cta" data-go="review">유효해요, 계속 보유</button><div style="display:flex;gap:8px"><button class="cta ghost" style="flex:1" data-go="review">기준대로 매도</button><button class="cta ghost" style="flex:1" data-go="rule">기준 수정</button></div></div>
+      <div class="foot"><button class="cta" data-go="review">아직 이유가 유효해요 · 보유</button><div style="display:flex;gap:8px"><button class="cta ghost" style="flex:1;font-size:15px" data-go="review">정한 대로 손절하기</button><button class="cta ghost" style="flex:1;font-size:15px" data-go="rule">기준 바꾸기</button></div></div>
     </section>
 
     <!-- 돌아보기 -->
     <section class="scr" id="v-review">
       <div class="bar"><button class="back" aria-label="뒤로" data-go="alert"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>원큐노트 4/4</div>
-      <div class="pad" style="padding-top:18px"><p class="h">이번 달 돌아보기</p><p class="sub">아래 숫자는 모두 예시예요.</p></div>
+      <div class="pad" style="padding-top:18px"><p class="h">이번 달 돌아보기</p><p class="sub">수익률보다 먼저, 내가 정한 기준대로 판단했는지 봐요. 아래 숫자는 모두 예시예요.</p></div>
       <div class="pad stack" style="margin-top:12px">
-        <div class="card"><p class="small">기준을 지킨 횟수</p><p style="font-size:30px;font-weight:900">3 <span style="font-size:17px;color:var(--mut)">/ 4번</span></p>
-          <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-top:8px"><div class="track" style="background:var(--g)"></div><div class="track" style="background:var(--g)"></div><div class="track" style="background:var(--g)"></div><div class="track"></div></div></div>
-        <div class="card stack" style="gap:12px"><p style="font-weight:700">산 이유별 결과</p>
-          <div class="row" style="justify-content:space-between"><div><p style="font-weight:700">실적이 좋아서</p><p class="small">2종목 · 기준 지킴 2/2</p></div><b class="up num">+6.1%</b></div>
-          <div class="row" style="justify-content:space-between"><div><p style="font-weight:700">오래 갖고 갈 회사</p><p class="small">1종목 · 기준 지킴 1/1</p></div><b class="up num">+2.3%</b></div>
-          <div class="row" style="justify-content:space-between"><div><p style="font-weight:700">뉴스를 보고</p><p class="small">1종목 · 기준 지킴 0/1</p></div><b class="down num">-7.4%</b></div></div>
-        <div class="dark"><p style="color:#8FD8CE;font-weight:700">이번 달 발견</p><p style="font-size:15px;color:#fff;margin-top:4px">뉴스만 보고 산 종목에서 기준을 놓쳤어요. 다음엔 사기 전에 관계 지도로 한 번 더 확인해볼까요?</p></div>
+        <div class="card stack" style="gap:10px">
+          <p class="small" style="font-weight:700;color:var(--ink2)">기준대로 판단한 횟수</p>
+          <p style="font-size:30px;font-weight:900;line-height:1">3 <span style="font-size:17px;color:var(--mut)">/ 4번</span></p>
+          <p class="small">기준 알림 4번 중 3번은 처음 정한 대로 판단했어요.</p>
+          <div class="stack" style="gap:10px;margin-top:4px"><div class="ev"><span class="evb ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><div style="flex:1"><p style="font-weight:700;font-size:15px">삼성전자 <span class="small" style="font-weight:400">11/5</span></p><p class="small">손절선 근접 → 이유 유효, 보유</p></div></div><div class="ev"><span class="evb ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><div style="flex:1"><p style="font-weight:700;font-size:15px">SK하이닉스 <span class="small" style="font-weight:400">11/12</span></p><p class="small">목표가 도달 → 정한 대로 매도</p></div></div><div class="ev"><span class="evb ok"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span><div style="flex:1"><p style="font-weight:700;font-size:15px">반도체 ETF <span class="small" style="font-weight:400">11/18</span></p><p class="small">손절선 근접 → 이유 유효, 보유</p></div></div><div class="ev"><span class="evb no"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></span><div style="flex:1"><p style="font-weight:700;font-size:15px">BGF리테일 (뉴스 보고 삼) <span class="small" style="font-weight:400">11/22</span></p><p class="small">손절선 도달 → 기준을 넘겨 보유</p></div></div></div>
+        </div>
+        <div class="card stack" style="gap:12px"><div><p style="font-weight:700">산 이유별 결과</p><p class="small" style="margin-top:2px">어떤 이유로 샀을 때 결과가 좋았는지 비교해요.</p></div>
+          <div class="row" style="justify-content:space-between"><div><p style="font-weight:700">실적이 좋아서</p><p class="small">2종목 · 기준대로 2/2</p></div><b class="up num">+6.1%</b></div>
+          <div class="row" style="justify-content:space-between"><div><p style="font-weight:700">오래 갖고 갈 회사</p><p class="small">1종목 · 기준대로 1/1</p></div><b class="up num">+2.3%</b></div>
+          <div class="row" style="justify-content:space-between"><div><p style="font-weight:700">뉴스를 보고</p><p class="small">1종목 · 기준대로 0/1</p></div><b class="down num">-7.4%</b></div></div>
+        <div class="dark"><p style="color:#8FD8CE;font-weight:700">이번 달 발견</p><p style="font-size:15px;color:#fff;margin-top:4px">기준을 넘긴 한 번은 뉴스만 보고 산 종목이었어요. 다음엔 사기 전에 관계 지도로 한 번 더 확인해볼까요?</p></div>
       </div>
       <div class="foot"><button class="cta" data-go="stock">평소 종목 화면에서는?</button></div>
     </section>
-
-    <div class="dim" id="dim" hidden></div>
-    <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shT" hidden>
-      <div class="row" style="justify-content:space-between"><p id="shT" style="font-size:19px;font-weight:900"></p><button class="x" id="shX" aria-label="닫기"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
-      <p id="shD" class="small" style="margin-top:4px"></p>
-      <div id="shL" class="stack" style="margin-top:12px;gap:8px"></div>
-      <div id="shA"></div>
-      <p class="small" style="margin-top:12px">추천이 아니에요. 2026년 11월 기준 보도·운용사 공개 자료로 정리했고, 상품 구성과 비중은 바뀔 수 있어요.</p>
-    </div>
 
     <!-- 종목 상세 · 관계 보기 -->
     <section class="scr" id="v-stock">
@@ -340,6 +347,14 @@ input[type=range]{width:100%;accent-color:var(--g);height:28px}
       </div>
       <div class="foot"><button class="cta" data-go="rule">이 종목으로 기준 세우기</button></div>
     </section>
+    <div class="dim" id="dim" hidden></div>
+    <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shT" hidden>
+      <div class="row" style="justify-content:space-between"><p id="shT" style="font-size:19px;font-weight:900"></p><button class="x" id="shX" aria-label="닫기"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+      <p id="shD" class="small" style="margin-top:4px"></p>
+      <div id="shL" class="stack" style="margin-top:12px;gap:8px"></div>
+      <div id="shA"></div>
+      <p class="small" style="margin-top:12px">추천이 아니에요. 2026년 11월 기준 보도·운용사 공개 자료로 정리했고, 상품 구성과 비중은 바뀔 수 있어요.</p>
+    </div>
   </main>
   </div>
 </div>
@@ -354,8 +369,8 @@ const STEPS = [
   {id:'map',   t:'종목 관계 지도', s:'관련 상품을 위험도 순으로', h:'동그라미를 누르거나 ‘목록으로 보기’로 관련주·상품을 확인해보세요'},
   {id:'sim',   t:'개념 시뮬레이터', s:'10% 빠지면 얼마?', h:'슬라이더를 움직여 1배·2배·인버스를 비교해보세요'},
   {id:'rule',  t:'나의 기준 카드', s:'이유와 기준을 먼저 적기', h:'산 이유와 기준을 정하고 매수해보세요'},
-  {id:'alert', t:'기준 알림', s:'처음 이유로 돌아오기', h:'3주 뒤, 손절선에 가까워졌어요. 처음 이유를 확인해보세요'},
-  {id:'review',t:'월간 돌아보기', s:'다음 기준으로', h:'한 달을 돌아보고 다음 기준을 세워요'},
+  {id:'alert', t:'기준 알림', s:'처음 이유로 돌아오기', h:'3주 뒤 알림을 눌러 들어온 화면이에요. 처음 이유를 보고 판단해보세요'},
+  {id:'review',t:'월간 돌아보기', s:'다음 기준으로', h:'한 달 동안 기준대로 판단했는지, 어떤 이유가 잘 맞았는지 돌아봐요'},
   {id:'stock', t:'평소에도 관계 보기', s:'종목 화면에서 협력업체·관련주', h:'원큐노트 밖에서도 종목 화면의 ‘관계 보기’로 협력업체·관련주를 볼 수 있어요'}
 ];
 const VIEWS = ['start', ...STEPS.map(x => x.id)];
@@ -498,6 +513,7 @@ function echo() {
   const memo = $('#memo').value.trim();
   $('#me').textContent = '“' + (memo || '반도체 업황이 회복될 것 같아서') + '”';
   $('#se').textContent = '-' + rule.stop + '%';
+  $('#se2').textContent = '-' + rule.stop + '%';
   $('#te').textContent = '+' + rule.target + '%';
 }
 
